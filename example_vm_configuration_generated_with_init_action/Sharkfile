@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# These variables MUST be defined:
+__original_cloud_image_path=''
+# VM name should be unique across all VMs on the current host.
+__vm_name=''
+
+# Leave default values if you wish:
+__vm_disk_image_directory="${HOME}/.cache/${__vm_config_file_name}/${__vm_name}"
+__vm_disk_image_file_path="${__vm_disk_image_directory}/${__vm_name}.qcow2"
+__vm_memory=1024
+__vm_vcpus=1
+__vm_disk="'${__vm_disk_image_file_path}',size=20"
+__vm_cloud_init='user-data=user-data'
+__virt_install_command="virt-install --import --osinfo detect=on,require=off --name '${__vm_name}' --memory '${__vm_memory}' --vcpus '${__vm_vcpus}' --disk '${__vm_disk}' --cloud-init '${__vm_cloud_init}'"
+
+# Before creating VM, for the first time, with `up` action to see it in Virtual Machine Manager in
+# `File > Add Connection... > Hypervisor` select `QEMU/KVM user session` which is on URI:
+# qemu:///session
