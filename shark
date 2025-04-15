@@ -35,6 +35,20 @@ set_text_color() {
     fi
 }
 
+ask_confirmation() {
+    local question
+
+    question=''
+    [[ ! -z ${1:-} ]] && question="${1}"
+    [[ '' = ${question} ]] && error_message_and_exit "Question must be defined (first argument)."
+
+    read -p "${question} ([Y]es or [N]o): "
+    case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+        y|yes) echo 'yes' ;;
+        *) echo 'no' ;;
+    esac
+}
+
 __action=''
 [[ ! -z ${1:-} ]] && __action="${1}"
 [[ '' = ${__action} ]] && error_message_and_exit "Action must be defined (first argument). Try using 'init' action which will create config files for VM in the current directory."
@@ -113,13 +127,37 @@ up() {
     volume_name="${__vm_name}.${__original_cloud_image_format}"
     export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
 
-    virsh vol-create-as default \
-        "${volume_name}" \
-        "10M" \
-        --format "${__original_cloud_image_format}"
-    virsh vol-upload --pool default "${volume_name}" "${__original_cloud_image_path}"
+    if [[ ! $(virsh list --all | grep " ${__vm_name} ") ]]; then
+        virsh vol-create-as default \
+            "${volume_name}" \
+            "10M" \
+            --format "${__original_cloud_image_format}"
+        virsh vol-upload --pool default "${volume_name}" "${__original_cloud_image_path}"
 
-    eval "${__virt_install_command}"
+        eval "${__virt_install_command}"
+    else
+        virsh start "${__vm_name}"
+    fi
+}
+
+down() {
+    load_and_verify_vm_config
+
+    export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
+
+    virsh shutdown "${__vm_name}"
+}
+
+destroy() {
+    load_and_verify_vm_config
+
+    [[ 'yes' != $(ask_confirmation "Destroy VM '${__vm_name}' and its storage?") ]] \
+        && info_message 'Not destroyed.' && exit 0
+
+    export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
+
+    virsh destroy "${__vm_name}" || true
+    virsh undefine "${__vm_name}" --remove-all-storage || true
 }
 
 main() {
@@ -127,6 +165,10 @@ main() {
         init
     elif [[ 'up' == ${__action} ]]; then
         up
+    elif [[ 'down' == ${__action} ]]; then
+        down
+    elif [[ 'destroy' == ${__action} ]]; then
+        destroy
     else
         error_message_and_exit "Action '${__action}' is not supported."
     fi

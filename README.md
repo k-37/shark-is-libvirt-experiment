@@ -35,7 +35,7 @@ Download [`genericcloud` image](https://cdimage.debian.org/images/cloud/) for De
 
 ## 🦈 installation
 
-Copy `./shark` to your `echo $PATH` and set execute permission on it with:
+Copy [`./shark`](shark) to your `echo $PATH` and set execute permission on it with:
 
     chmod +x shark
 
@@ -45,8 +45,16 @@ To create VM config files, most notably `Sharkfile` which defines VM, in empty d
 
     shark init
 
-`./example_vm_configuration_generated_with_init_action` directory contains example of VM configuration generated with `shark init` command.
+[`./example_vm_configuration_generated_with_init_action`](example_vm_configuration_generated_with_init_action) directory contains example of VM configuration generated with `shark init` command.
 
 You **must** edit `Sharkfile` before creating VM with command:
 
     shark up
+
+To shutdown VM:
+
+    shark down
+
+To destroy VM and its storage:
+
+    shark destroy
