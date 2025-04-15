@@ -116,6 +116,8 @@ load_and_verify_vm_config() {
     [[ -z ${__vm_name} ]] \
         && error_message_and_exit "Name for VM is not defined in '${__vm_config_file_path}'."
 
+    export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
+
     info_message "VM configuration is valid."
 }
 
@@ -125,7 +127,6 @@ up() {
     load_and_verify_vm_config
 
     volume_name="${__vm_name}.${__original_cloud_image_format}"
-    export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
 
     if [[ ! $(virsh list --all | grep " ${__vm_name} ") ]]; then
         virsh vol-create-as default \
@@ -143,8 +144,6 @@ up() {
 down() {
     load_and_verify_vm_config
 
-    export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
-
     virsh shutdown "${__vm_name}"
 }
 
@@ -153,8 +152,6 @@ destroy() {
 
     [[ 'yes' != $(ask_confirmation "Destroy VM '${__vm_name}' and its storage?") ]] \
         && info_message 'Not destroyed.' && exit 0
-
-    export LIBVIRT_DEFAULT_URI="${__libvirt_default_uri}"
 
     virsh destroy "${__vm_name}" || true
     virsh undefine "${__vm_name}" --remove-all-storage || true
