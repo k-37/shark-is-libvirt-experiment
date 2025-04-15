@@ -47,7 +47,7 @@ To create VM config files, most notably `Sharkfile` which defines VM, in empty d
 
 [`./example_vm_configuration_generated_with_init_action`](example_vm_configuration_generated_with_init_action) directory contains example of VM configuration generated with `shark init` command.
 
-You **must** edit `Sharkfile` before creating VM with command:
+You **must** edit `Sharkfile` and `user-data` before creating VM with command:
 
     shark up
 

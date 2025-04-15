@@ -9,6 +9,8 @@ __vm_config_file_path="${__project_path}/${__vm_config_file_name}"
 __vm_default_name="$(basename ${__project_path})"
 __default_cloud_image_path='/tmp/debian-12-genericcloud-amd64-20241004-1890.qcow2'
 __default_cloud_image_format='qcow2'
+__default_user_name='admin'
+__default_user_password='admin'
 
 error_message_and_exit() {
     set_text_color 'red'
@@ -91,18 +93,20 @@ init() {
     [[ -f './user-data' ]] \
         && error_message_and_exit "File '${__project_path}/user-data' already exists."
 
-    cat <<- 'EOF' > './user-data'
+    cat <<- EOF > './user-data'
 		#cloud-config
 
-		system_info:
-		    default_user:
-		        name: "admin"
-		        plain_text_passwd: "admin"
-		        lock_passwd: false
-		        groups: ["sudo"]
+		hostname: ${__vm_default_name}
+		create_hostname_file: true
+
+		users:
+		- name: ${__default_user_name}
+		  plain_text_passwd: ${__default_user_password}
+		  lock_passwd: false
+		  groups: sudo
 	EOF
 
-    info_message "Initialization is done. Edit '${__vm_config_file_path}' before starting VM with 'up' action."
+    info_message "Initialization is done. Edit files in '${__project_path}' before starting VM with 'up' action."
 }
 
 load_and_verify_vm_config() {

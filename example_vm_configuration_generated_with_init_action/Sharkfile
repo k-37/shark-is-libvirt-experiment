@@ -8,7 +8,7 @@ __original_cloud_image_path='/tmp/debian-12-genericcloud-amd64-20241004-1890.qco
 __original_cloud_image_format='qcow2'
 
 # VM name should be unique across all VMs on the current host.
-__vm_name='parent_folder_name'
+__vm_name='default_hostname_is_parent_folder_name'
 
 ##################################################
 ### This section is optional for configuration ###

@@ -1,8 +1,10 @@
 #cloud-config
 
-system_info:
-    default_user:
-        name: "admin"
-        plain_text_passwd: "admin"
-        lock_passwd: false
-        groups: ["sudo"]
+hostname: default_hostname_is_parent_folder_name
+create_hostname_file: true
+
+users:
+- name: admin
+  plain_text_passwd: admin
+  lock_passwd: false
+  groups: sudo
