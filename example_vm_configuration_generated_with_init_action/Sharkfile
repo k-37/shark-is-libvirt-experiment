@@ -19,6 +19,7 @@ __vm_disk_image_file_path="${__vm_disk_image_directory}/${__vm_name}.${__origina
 __vm_memory=1024
 __vm_vcpus=1
 __vm_disk="'${__vm_disk_image_file_path}'"
+__vm_disk_size=4G
 __vm_network='default,model=virtio'
 __vm_cloud_init='user-data=user-data'
 __libvirt_default_uri='qemu:///system'

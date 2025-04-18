@@ -84,6 +84,7 @@ init() {
 		__vm_memory=1024
 		__vm_vcpus=1
 		__vm_disk="'\${__vm_disk_image_file_path}'"
+		__vm_disk_size=4G
 		__vm_network='default,model=virtio'
 		__vm_cloud_init='user-data=user-data'
 		__libvirt_default_uri='qemu:///system'
@@ -141,6 +142,7 @@ up() {
             "10M" \
             --format "${__original_cloud_image_format}"
         virsh vol-upload --pool default "${volume_name}" "${__original_cloud_image_path}"
+        virsh vol-resize "${volume_name}" --pool default --capacity "${__vm_disk_size}"
 
         eval "${__virt_install_command}"
     else
