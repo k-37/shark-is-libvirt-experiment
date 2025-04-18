@@ -13,6 +13,14 @@ Intention is to create VM from cloud disk image provided by GNU/Linux distributi
 
 - GNU/Linux OS capable of running QEMU/KVM based VMs.
 
+# Design goals
+
+- Simple and easy to adapt.
+- Practice [suckless.org philosophy](https://suckless.org/philosophy/), if possible.
+- Support basic workflow, for everything else there is [Vagrant](https://en.wikipedia.org/wiki/Vagrant_(software)).
+- Minimal third party dependencies.
+- No compiler.
+
 # Installation and setup
 
 ## QEMU and Virtual Machine Manager
