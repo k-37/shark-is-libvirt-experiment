@@ -13,7 +13,7 @@ __original_cloud_image_format='qcow2'
 
 # VM name should be unique across all VMs on the current host.
 # By default it is based on parent directory name.
-__vm_name='DEFAULT_HOSTNAME_IS_BASED_ON_PARENT_FOLDER_NAME'
+__vm_name='shark-test-20250418-222257'
 
 __vm_memory=1024
 __vm_vcpus=1

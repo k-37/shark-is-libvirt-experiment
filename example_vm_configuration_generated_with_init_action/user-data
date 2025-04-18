@@ -1,6 +1,6 @@
 #cloud-config
 
-hostname: DEFAULT_HOSTNAME_IS_BASED_ON_PARENT_FOLDER_NAME
+hostname: shark-test-20250418-222257
 create_hostname_file: true
 
 users:

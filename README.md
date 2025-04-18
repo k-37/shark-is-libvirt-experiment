@@ -19,7 +19,7 @@ Intention is to create VM from cloud disk image provided by GNU/Linux distributi
 - Practice [suckless.org philosophy](https://suckless.org/philosophy/), if possible.
 - Support basic workflow, for everything else there is [Vagrant](https://en.wikipedia.org/wiki/Vagrant_(software)).
 - Minimal third party dependencies.
-- No compiler.
+- No compiler or runtime.
 
 # Installation and setup
 
@@ -27,7 +27,7 @@ Intention is to create VM from cloud disk image provided by GNU/Linux distributi
 
 Check compatibility:
 
-    grep -o 'vmx\|svm' /proc/cpuinfo # If nothing comes back check BIOS to make sure virtualization is enabled
+    grep -o 'vmx\|svm' /proc/cpuinfo # If nothing comes back check BIOS/UEFI to make sure virtualization is enabled
 
 Install and setup on Debian/Ubuntu:
 
@@ -39,9 +39,9 @@ Install and setup on Debian/Ubuntu:
 
 ## Cloud disk image
 
-Download [Debian `genericcloud` image](https://cdimage.debian.org/images/cloud/) for version you wish to use in VM. E.g. [https://cdimage.debian.org/images/cloud/bookworm/20241004-1890/debian-12-genericcloud-amd64-20241004-1890.qcow2](https://cdimage.debian.org/images/cloud/bookworm/20241004-1890/debian-12-genericcloud-amd64-20241004-1890.qcow2).
+Download [Debian `genericcloud` image](https://cdimage.debian.org/images/cloud/) for version you wish to use in VM, e.g. `https://cdimage.debian.org/images/cloud/bookworm/20241004-1890/debian-12-genericcloud-amd64-20241004-1890.qcow2`.
 
-You can also use cloud image for another distribution if you wish.
+You can also try using cloud image for another distribution if you wish.
 
 ## 🦈 installation
 
@@ -51,8 +51,10 @@ Copy [`./shark`](shark), after reviewing the code, to your `echo $PATH` and set 
 
 # Usage
 
-To create VM config files, most notably `Sharkfile` which defines VM, in empty directory execute:
+To create VM config files, most notably `Sharkfile` which defines VM, execute:
 
+    mkdir shark-test
+    cd shark-test
     shark init
 
 [`./example_vm_configuration_generated_with_init_action`](example_vm_configuration_generated_with_init_action) directory contains example of VM configuration generated with `shark init` command.
