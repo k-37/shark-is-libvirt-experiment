@@ -1,6 +1,6 @@
 #cloud-config
 
-hostname: default_hostname_is_parent_folder_name
+hostname: DEFAULT_HOSTNAME_IS_BASED_ON_PARENT_FOLDER_NAME
 create_hostname_file: true
 
 users:

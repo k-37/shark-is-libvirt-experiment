@@ -1,6 +1,6 @@
 # Introduction
 
-This project explores using [`libvirt`](https://libvirt.org/) based tools to create [QEMU/KVM](https://www.youtube.com/watch?v=BgZHbCDFODk) Virtual Machine (*VM*) with workflow similar to [Vagrant](https://en.wikipedia.org/wiki/Vagrant_(software)).
+This project explores using [`libvirt`](https://libvirt.org/) based tools to create [QEMU/KVM](https://www.youtube.com/watch?v=BgZHbCDFODk) Virtual Machine (*VM*) with workflow inspired by [Vagrant](https://en.wikipedia.org/wiki/Vagrant_(software)).
 
 Intention is to create VM from cloud disk image provided by GNU/Linux distribution and for basic initialization use [`cloud-init`](https://cloudinit.readthedocs.io/en/latest/).
 
@@ -39,7 +39,9 @@ Install and setup on Debian/Ubuntu:
 
 ## Cloud disk image
 
-Download [Debian `genericcloud` image](https://cdimage.debian.org/images/cloud/) for version you wish to use in VM. You can also use cloud image for another distribution if you wish.
+Download [Debian `genericcloud` image](https://cdimage.debian.org/images/cloud/) for version you wish to use in VM. E.g. [https://cdimage.debian.org/images/cloud/bookworm/20241004-1890/debian-12-genericcloud-amd64-20241004-1890.qcow2](https://cdimage.debian.org/images/cloud/bookworm/20241004-1890/debian-12-genericcloud-amd64-20241004-1890.qcow2).
+
+You can also use cloud image for another distribution if you wish.
 
 ## 🦈 installation
 

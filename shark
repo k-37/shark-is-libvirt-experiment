@@ -7,7 +7,7 @@ __project_path="$PWD"
 __vm_config_file_name='Sharkfile'
 __vm_config_file_path="${__project_path}/${__vm_config_file_name}"
 __vm_default_name="$(basename ${__project_path})-$(date '+%Y%m%d-%H%M%S')"
-__default_cloud_image_path='/tmp/debian-12-genericcloud-amd64-20241004-1890.qcow2'
+__default_cloud_image_path='PATH_TO_DOWNLOADED_GENERIC_CLOUD_IMAGE.qcow2'
 __default_cloud_image_format="${__default_cloud_image_path##*.}"
 __default_user_name='admin'
 __default_user_password="${__default_user_name}"
@@ -66,7 +66,7 @@ init() {
 		#!/usr/bin/env bash
 
 		##################################################
-		### Settings in this section MUST be verified. ###
+		### Settings in this section MUST be modified. ###
 		##################################################
 
 		__original_cloud_image_path='${__default_cloud_image_path}'
@@ -88,13 +88,12 @@ init() {
 		### Under the hood settings. Modify carefully. ###
 		##################################################
 
-		__vm_disk_image_directory='/var/lib/libvirt/images'
-		__vm_disk_image_file_path="\${__vm_disk_image_directory}/\${__vm_name}.\${__original_cloud_image_format}"
-		__vm_disk="'\${__vm_disk_image_file_path}'"
+		__vm_storage_pool_name='default'
+		__vm_volume_name="\${__vm_name}.\${__original_cloud_image_format}"
 		__vm_network='default,model=virtio'
 		__vm_cloud_init='user-data=user-data'
 		__libvirt_default_uri='qemu:///system'
-		__virt_install_command="virt-install --connect '\${__libvirt_default_uri}' --import --osinfo detect=on,require=off --name '\${__vm_name}' --memory '\${__vm_memory}' --vcpus '\${__vm_vcpus}' --disk '\${__vm_disk}' --network '\${__vm_network}' --cloud-init '\${__vm_cloud_init}'"
+		__virt_install_command="virt-install --import --osinfo detect=on,require=off --name \${__vm_name} --memory \${__vm_memory} --vcpus \${__vm_vcpus} --disk vol=\${__vm_storage_pool_name}/\${__vm_volume_name} --network \${__vm_network} --cloud-init \${__vm_cloud_init}"
 	EOF
 
     [[ -f './user-data' ]] \
@@ -119,6 +118,7 @@ init() {
 load_and_verify_vm_config() {
     [[ ! -f ${__vm_config_file_path} ]] \
         && error_message_and_exit "File '${__vm_config_file_path}' is not found. Use 'init' action to create one."
+
     source "${__vm_config_file_path}"
 
     [[ ! -f ${__original_cloud_image_path} ]] \
@@ -136,19 +136,17 @@ load_and_verify_vm_config() {
 }
 
 up() {
-    local volume_name
-
-    load_and_verify_vm_config
-
-    volume_name="${__vm_name}.${__original_cloud_image_format}"
-
     if [[ ! $(virsh list --all | grep " ${__vm_name} ") ]]; then
-        virsh vol-create-as default \
-            "${volume_name}" \
+        virsh vol-create-as ${__vm_storage_pool_name} \
+            "${__vm_volume_name}" \
             "10M" \
             --format "${__original_cloud_image_format}"
-        virsh vol-upload --pool default "${volume_name}" "${__original_cloud_image_path}"
-        virsh vol-resize "${volume_name}" --pool default --capacity "${__vm_disk_size}"
+        virsh vol-upload --pool ${__vm_storage_pool_name} \
+            "${__vm_volume_name}" \
+            "${__original_cloud_image_path}"
+        virsh vol-resize "${__vm_volume_name}" \
+            --pool ${__vm_storage_pool_name} \
+            --capacity "${__vm_disk_size}"
 
         eval "${__virt_install_command}"
     else
@@ -157,14 +155,10 @@ up() {
 }
 
 down() {
-    load_and_verify_vm_config
-
     virsh shutdown "${__vm_name}"
 }
 
 destroy() {
-    load_and_verify_vm_config
-
     [[ 'yes' != $(ask_confirmation "Destroy VM '${__vm_name}' and its storage?") ]] \
         && info_message 'Not destroyed.' && exit 0
 
@@ -176,10 +170,13 @@ main() {
     if [[ 'init' == ${__action} ]]; then
         init
     elif [[ 'up' == ${__action} ]]; then
+        load_and_verify_vm_config
         up
     elif [[ 'down' == ${__action} ]]; then
+        load_and_verify_vm_config
         down
     elif [[ 'destroy' == ${__action} ]]; then
+        load_and_verify_vm_config
         destroy
     else
         error_message_and_exit "Action '${__action}' is not supported."
