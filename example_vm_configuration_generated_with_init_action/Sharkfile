@@ -1,25 +1,31 @@
 #!/usr/bin/env bash
 
-################################################
-### Options in this section MUST be verified ###
-################################################
+##################################################
+### Settings in this section MUST be verified. ###
+##################################################
 
 __original_cloud_image_path='/tmp/debian-12-genericcloud-amd64-20241004-1890.qcow2'
 __original_cloud_image_format='qcow2'
 
+##########################
+### Basic VM settings. ###
+##########################
+
 # VM name should be unique across all VMs on the current host.
+# By default it is based on parent directory name.
 __vm_name='default_hostname_is_parent_folder_name'
 
-##################################################
-### This section is optional for configuration ###
-##################################################
+__vm_memory=1024
+__vm_vcpus=1
+__vm_disk_size=4G
+
+###################################################
+### Under the hood settings. Modify carerfully. ###
+###################################################
 
 __vm_disk_image_directory='/var/lib/libvirt/images'
 __vm_disk_image_file_path="${__vm_disk_image_directory}/${__vm_name}.${__original_cloud_image_format}"
-__vm_memory=1024
-__vm_vcpus=1
 __vm_disk="'${__vm_disk_image_file_path}'"
-__vm_disk_size=4G
 __vm_network='default,model=virtio'
 __vm_cloud_init='user-data=user-data'
 __libvirt_default_uri='qemu:///system'
